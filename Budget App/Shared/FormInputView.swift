@@ -40,6 +40,7 @@ struct FormInputView: View {
                 .font(.regular(14))
             }
             .padding(EdgeInsets(top: 10, leading: 8, bottom: 10, trailing: 6))
+            .padding(EdgeInsets(top: 10, leading: 8, bottom: 10, trailing: 6))
             .background {
                 RoundedRectangle(cornerRadius: 5).fill(Color.white)
             }

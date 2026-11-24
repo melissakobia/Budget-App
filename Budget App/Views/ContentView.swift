@@ -9,7 +9,15 @@ struct ContentView: View {
             ForEach(Tabs.allCases) { tab in
                 tabView(tab)
                     .tabItem {
-                        Label(tab.title, systemImage: tab.icon)
+                        if tab == .new {
+                            Image("Icons/NewTab")
+                                .renderingMode(.original)
+                        } else {
+                            Image(systemName: tab.icon)
+                        }
+                        if tab != .new {
+                            Text(tab.title)
+                        }
                     }
                     .tag(tab)
             }
@@ -67,10 +75,10 @@ enum Tabs: String, CaseIterable, Identifiable, Hashable {
     var icon: String {
         switch self {
         case .home: "house"
-        case .budgets: "book"
+        case .budgets: "square.grid.2x2"
         case .new: "plus.circle.fill"
         case .reports: "chart.bar"
-        case .account: "person.crop.circle"
+        case .account: "person"
         }
     }
 }

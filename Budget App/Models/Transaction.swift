@@ -26,6 +26,21 @@ enum Category: String, CaseIterable {
     case clothing = "Clothing"
     case fees = "Fees"
     case none = ""
+
+    var image: String {
+        switch self {
+        case .food:
+            "kfc"
+        case .transport:
+            "total"
+        case .clothing:
+            "naivas"
+        case .fees:
+            "paul"
+        case .none:
+            "total"
+        }
+    }
 }
 
 enum Currency: String, CaseIterable {

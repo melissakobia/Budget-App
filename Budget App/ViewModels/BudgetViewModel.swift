@@ -15,6 +15,8 @@ final class BudgetViewModel: ObservableObject {
     @Published private(set) var lastAddedAt = Date()
     @Published private(set) var transactions: [Transaction]
 
+    let monthlyBudget = 20_000.0
+
     private let context: NSManagedObjectContext
     private let sampleTransactions: [Transaction] = [
         Transaction(image: "kfc", amount: 200, date: Date(), title: "KFC chicken", category: .food),
@@ -53,8 +55,17 @@ final class BudgetViewModel: ObservableObject {
         }
     }
 
-    func total() -> Double {
-        transactions.reduce(0) { $0 + $1.amount }
+    func totalSpend(in month: Date) -> Double {
+        let monthTransactions = transactions.filter {
+            $0.currency == .kes && Calendar.current.isDate($0.date, equalTo: month, toGranularity: .month)
+        }
+        // Monthly spend only includes KES transactions from the selected month.
+        return monthTransactions.reduce(0) { $0 + $1.amount }
+    }
+
+    func remainingBudget(in month: Date) -> Double {
+        // The home balance is the Ksh 20,000 budget minus selected-month spend.
+        monthlyBudget - totalSpend(in: month)
     }
 
     func clearForm() {

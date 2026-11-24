@@ -12,7 +12,9 @@ extension Color {
     static let secondary = Color.secondary
     static let green = Color.green
     static let white = Color.white
-    
-    
-    
+
+    static let foodBeverage = Color("Colors/FoodBeverage")
+    static let transportFuel = Color("Colors/TransportFuel")
+    static let clothingCategory = Color("Colors/ClothingCategory")
+    static let transactionFees = Color("Colors/TransactionFees")
 }
