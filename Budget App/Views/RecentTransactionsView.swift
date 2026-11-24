@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct RecentTransactionsView: View {
-    @ObservedObject var budgetViewModel: BudgetViewModel
+    @EnvironmentObject var budgetViewModel: BudgetViewModel
     
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -38,6 +38,8 @@ struct RecentTransactionsView: View {
    
 }
 
-#Preview {
-    RecentTransactionsView(budgetViewModel: BudgetViewModel())
+struct RecentTransactionsView_Previews: PreviewProvider {
+    static var previews: some View {
+        RecentTransactionsView().environmentObject(BudgetViewModel())
+    }
 }

@@ -1,81 +1,76 @@
-//
-//  ContentView.swift
-//  Budget App
-//
-//  Created by Sonnie on 24/11/2026.
-//
-
+import CoreData
 import SwiftUI
-import SwiftData
 
 struct ContentView: View {
-    @StateObject var budgetViewModel: BudgetViewModel = BudgetViewModel()
-    @State var selected: Tabs = .home
-    @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
+    @EnvironmentObject private var budgetViewModel: BudgetViewModel
 
     var body: some View {
-        TabView {
-            ForEach (Tabs.allCases, id: \.id) { tab in
-                Tab(tab.title, systemImage: tab.icon) {
-                  tabView(tab)
-                }
-                
+        TabView(selection: $budgetViewModel.selectedTab) {
+            ForEach(Tabs.allCases) { tab in
+                tabView(tab)
+                    .tabItem {
+                        Label(tab.title, systemImage: tab.icon)
+                    }
+                    .tag(tab)
             }
         }
     }
-    
-    func tabView(_ selected: Tabs) -> some View {
+
+    @ViewBuilder
+    private func tabView(_ selected: Tabs) -> some View {
         switch selected {
         case .home:
-            return AnyView(NavigationViewWrapper {
-                HomeView().environmentObject(budgetViewModel)
-            })
+            NavigationViewWrapper {
+                HomeView()
+            }
         case .budgets:
-            return AnyView(NavigationViewWrapper {
-                EmptyView()
-            })
+            NavigationViewWrapper {
+                placeholderView("Budgets")
+            }
         case .reports:
-            return AnyView(NavigationViewWrapper {
-                EmptyView()
-            })
-        case .new:
-            return AnyView(NavigationStack {
-                AddBudgetView().environmentObject(budgetViewModel)
-            })
-                
-            
+            NavigationViewWrapper {
+                placeholderView("Reports")
+            }
         case .account:
-            return AnyView(NavigationViewWrapper {
-                EmptyView()
-            })
+            NavigationViewWrapper {
+                placeholderView("Account")
+            }
+        case .new:
+            NavigationStack {
+                AddBudgetView()
+            }
         }
     }
-        
+
+    private func placeholderView(_ title: String) -> some View {
+        Text(title)
+            .font(.bold(22))
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color.backgroundLight)
+    }
 }
 
-enum Tabs: String, CaseIterable, Identifiable {
+enum Tabs: String, CaseIterable, Identifiable, Hashable {
     case home, budgets, new, reports, account
-    
     var id: Self { self }
-    
+
     var title: String {
         switch self {
-        case .home: return "Home"
-        case .budgets: return "Budgets"
-        case .new: return "New"
-        case .reports: return "Reports"
-        case .account: return "Account"
+        case .home: "Home"
+        case .budgets: "Budgets"
+        case .new: "New"
+        case .reports: "Reports"
+        case .account: "Account"
         }
     }
-    
+
     var icon: String {
         switch self {
-        case .home: return "house"
-        case .budgets: return "book"
-        case .new: return "plus.circle.fill"
-        case .reports: return "chart.bar"
-        case .account: return "person.crop.circle"
+        case .home: "house"
+        case .budgets: "book"
+        case .new: "plus.circle.fill"
+        case .reports: "chart.bar"
+        case .account: "person.crop.circle"
         }
     }
 }
@@ -95,53 +90,3 @@ fileprivate struct NavigationViewWrapper<Content: View>: View {
 #endif
     }
 }
-
-#Preview {
-    ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
-}
-
-
-//    NavigationViewWrapper {
-//        List {
-//            ForEach(items) { item in
-//                NavigationLink {
-//                    Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-//                } label: {
-//                    Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
-//                }
-//            }
-//            .onDelete(perform: deleteItems)
-//        }
-//#if os(macOS)
-//        .navigationSplitViewColumnWidth(min: 180, ideal: 200)
-//#endif
-//        .toolbar {
-//#if os(iOS)
-//            ToolbarItem(placement: .navigationBarTrailing) {
-//                EditButton()
-//            }
-//#endif
-//            ToolbarItem {
-//                Button(action: addItem) {
-//                    Label("Add Item", systemImage: "plus")
-//                }
-//            }
-//        }
-//    }
-//}
-//
-//private func addItem() {
-//    withAnimation {
-//        let newItem = Item(timestamp: Date())
-//        modelContext.insert(newItem)
-//    }
-//}
-//
-//private func deleteItems(offsets: IndexSet) {
-//    withAnimation {
-//        for index in offsets {
-//            modelContext.delete(items[index])
-//        }
-//    }
-//}

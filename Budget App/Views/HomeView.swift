@@ -20,7 +20,7 @@ struct HomeView: View {
                     
                     totalAmountView
                     
-                    RecentTransactionsView(budgetViewModel: budgetViewModel)
+                    RecentTransactionsView()
                     
                 }
                 .padding(.vertical)
@@ -42,7 +42,7 @@ struct HomeView: View {
             Spacer()
             
             Image(systemName: "bell")
-                .font(.system(size: 16))
+                .font(.regular(16))
                 .foregroundStyle(.accent)
                 .fontWeight(.light)
                 .frame(width: 40, height: 40)
@@ -62,21 +62,18 @@ struct HomeView: View {
                 Spacer()
                 
                 Text("\(budgetViewModel.total().formatted())")
-                    .font(.system(size: 25))
-                    .bold()
+                    .font(.bold(25))
                     .foregroundStyle(.white)
                 
                 Text("Ksh.")
-                    .font(.subheadline)
-                    .fontWeight(.bold)
+                    .font(.bold(15))
                     .foregroundStyle(.white)
                 
                 Spacer()
             }
             
             Text("Remaining on your monthly budget")
-                .font(.system(size: 13))
-                .fontWeight(.medium)
+                .font(.medium(13))
                 .foregroundStyle(.white)
             
             
@@ -94,6 +91,8 @@ struct HomeView: View {
     
 }
 
-#Preview {
-    HomeView()
+struct HomeView_Previews: PreviewProvider {
+    static var previews: some View {
+        HomeView().environmentObject(BudgetViewModel())
+    }
 }

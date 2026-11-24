@@ -35,7 +35,7 @@ struct DropdownFieldView<T: Hashable>: View {
                 HStack {
                     
                     Text(labelProvider(selected).isEmpty ? placeholder : labelProvider(selected))
-                        .font(.system(size: (labelProvider(selected).isEmpty ? 13 : 14)))
+                        .font(.regular(labelProvider(selected).isEmpty ? 13 : 14))
                         .foregroundStyle(labelProvider(selected).isEmpty ? Color.gray : .black)
                     
                     Spacer()
@@ -67,7 +67,7 @@ struct DropdownFieldView<T: Hashable>: View {
     func menuRow(for option: T) -> some View {
         Label {
             Text(labelProvider(option))
-                .font(.system(size: (14)))
+                .font(.regular(14))
                 .foregroundStyle(Color.black)
         } icon: {}
     }

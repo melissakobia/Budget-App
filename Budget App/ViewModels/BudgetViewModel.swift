@@ -1,46 +1,84 @@
-//
-//  BudgetViewModel.swift
-//  Budget App
-//
-//  Created by Sonnie on 24/11/2026.
-//
-
+import Combine
+import CoreData
 import Foundation
-import SwiftData
 import SwiftUI
-internal import Combine
-
 
 @MainActor
-class BudgetViewModel: ObservableObject {
-    @Published var isLoading: Bool = false
-    @Published var showSuccess: Bool = false
+final class BudgetViewModel: ObservableObject {
+    @Published var isLoading = false
+    @Published var showSuccess = false
     @Published var category: Category = .none
-    @Published var allocation: String = ""
-    @Published var itemName: String = ""
+    @Published var allocation = ""
+    @Published var itemName = ""
     @Published var currency: Currency = .kes
-    @Published var showHome: Bool = false
-    
-    @Published var transactions: [Transaction] = [
-        Transaction(image: "kfc", amount: 200, date: Date(), title: "KFC chicken", category: .food, currency: .kes),
-        Transaction(image: "naivas", amount: 200, date: Date(), title: "Mitumba", category: .clothing, currency: .kes),
-        Transaction(image: "paul", amount: 200, date: Date(), title: "My Fees", category: .fees, currency: .kes)
+    @Published var selectedTab: Tabs = .home
+    @Published private(set) var lastAddedAt = Date()
+    @Published private(set) var transactions: [Transaction]
+
+    private let context: NSManagedObjectContext
+    private let sampleTransactions: [Transaction] = [
+        Transaction(image: "kfc", amount: 200, date: Date(), title: "KFC chicken", category: .food),
+        Transaction(image: "naivas", amount: 200, date: Date(), title: "Mitumba", category: .clothing),
+        Transaction(image: "paul", amount: 200, date: Date(), title: "My Fees", category: .fees)
     ]
 
-    
-    func addItem() {
-        transactions.append(Transaction(image: "kfc", amount: Double(allocation) ?? 0.0, date: Date(), title: itemName, category: category, currency: currency))
+    init(context: NSManagedObjectContext? = nil) {
+        self.context = context ?? PersistenceController.shared.container.viewContext
+        self.transactions = []
+        loadTransactions()
     }
-    
+
+    @discardableResult
+    func addItem() -> Bool {
+        let title = itemName.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !title.isEmpty, category != .none, let amount = Double(allocation), amount > 0 else { return false }
+
+        let record = BudgetRecord(context: context)
+        record.id = UUID()
+        record.title = title
+        record.amount = amount
+        let createdAt = Date()
+        record.date = createdAt
+        record.category = category.rawValue
+        record.currency = currency.rawValue
+
+        do {
+            try context.save()
+            lastAddedAt = createdAt
+            loadTransactions()
+            return true
+        } catch {
+            context.rollback()
+            return false
+        }
+    }
+
     func total() -> Double {
-        transactions.reduce(0.0) { $0 + $1.amount }
+        transactions.reduce(0) { $0 + $1.amount }
     }
-    
-    
+
     func clearForm() {
         itemName = ""
         allocation = ""
-        
+        category = .none
+        currency = .kes
     }
-    
+
+    private func loadTransactions() {
+        let request = NSFetchRequest<BudgetRecord>(entityName: "BudgetRecord")
+        request.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false)]
+        let records = (try? context.fetch(request)) ?? []
+        let saved = records.map { record in
+            Transaction(
+                id: record.id.uuidString,
+                image: "total",
+                amount: record.amount,
+                date: record.date,
+                title: record.title,
+                category: Category(rawValue: record.category),
+                currency: Currency(rawValue: record.currency) ?? .kes
+            )
+        }
+        transactions = saved + sampleTransactions
+    }
 }

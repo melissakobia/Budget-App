@@ -55,6 +55,8 @@ struct TransactionsListItemView: View {
     }
 }
 
-#Preview {
-    TransactionsListItemView(transaction: Transaction(image: "", amount: 0, date: Date(), title: ""))
+struct TransactionsListItemView_Previews: PreviewProvider {
+    static var previews: some View {
+        TransactionsListItemView(transaction: Transaction(image: "", amount: 0, date: Date(), title: ""))
+    }
 }

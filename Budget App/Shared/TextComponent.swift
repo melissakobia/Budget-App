@@ -1,10 +1,3 @@
-//
-//  TextComponent.swift
-//  Budget App
-//
-//  Created by Sonnie on 24/11/2026.
-//
-
 import SwiftUI
 
 struct TextComponent: View {
@@ -12,16 +5,18 @@ struct TextComponent: View {
     let fontSize: CGFloat
     let fontWeight: Font.Weight
     let textColor: Color
-    
+
     var body: some View {
-        
         Text(text)
-            .font(.system(size: fontSize))
-            .fontWeight(fontWeight)
+            .font(font(for: fontWeight, size: fontSize))
             .foregroundStyle(textColor)
     }
-}
 
-#Preview {
-    TextComponent(text: "", fontSize: 10, fontWeight: .light, textColor: .green)
+    private func font(for weight: Font.Weight, size: CGFloat) -> Font {
+        if weight == .bold { return .bold(size) }
+        if weight == .semibold { return .semibold(size) }
+        if weight == .medium { return .medium(size) }
+        if weight == .light { return .light(size) }
+        return .regular(size)
+    }
 }
