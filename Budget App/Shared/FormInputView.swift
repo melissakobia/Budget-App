@@ -60,6 +60,7 @@ struct FormInputView: View {
                     EmptyView()
                 }
                 .keyboardType(keyboardType)
+                .font(.system(size: 14))
             }
             .padding(EdgeInsets(top: 10, leading: 8, bottom: 10, trailing: 6))
             .padding(EdgeInsets(top: 10, leading: 8, bottom: 10, trailing: 6))

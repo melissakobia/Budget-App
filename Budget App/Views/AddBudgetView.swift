@@ -12,7 +12,6 @@ struct AddBudgetView: View {
     @EnvironmentObject var budgetViewModel: BudgetViewModel
     
     var body: some View {
-    
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
                 categoryView
@@ -67,6 +66,7 @@ struct AddBudgetView: View {
     
     var buttonView: some View {
         Button {
+            self.budgetViewModel.addItem()
             self.budgetViewModel.showSuccess = true
         } label: {
             ZStack {

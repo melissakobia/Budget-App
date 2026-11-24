@@ -79,6 +79,7 @@ struct SuccessView: View {
         VStack(alignment: .center, spacing: 15) {
             Button {
                 budgetViewModel.clearForm()
+                budgetViewModel.showHome = true
                 
             } label: {
                 ZStack {
