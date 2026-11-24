@@ -53,7 +53,7 @@ struct SuccessView: View {
                 
                 Spacer()
                 
-                TextComponent(text: "", fontSize: 13, fontWeight: .regular, textColor: .black)
+                TextComponent(text: budgetViewModel.itemName, fontSize: 13, fontWeight: .regular, textColor: .black)
             }
             
             HStack {
@@ -61,7 +61,7 @@ struct SuccessView: View {
                 
                 Spacer()
                 
-                TextComponent(text: "", fontSize: 13, fontWeight: .regular, textColor: .green)
+                TextComponent(text: "\(budgetViewModel.currency) \(budgetViewModel.allocation)", fontSize: 13, fontWeight: .regular, textColor: .green)
             }
             
             HStack {
@@ -69,7 +69,7 @@ struct SuccessView: View {
                 
                 Spacer()
                 
-                TextComponent(text: "", fontSize: 13, fontWeight: .regular, textColor: .black)
+                TextComponent(text: Date().formatted(date: .complete, time: .omitted), fontSize: 13, fontWeight: .regular, textColor: .black)
             }
             
         }
